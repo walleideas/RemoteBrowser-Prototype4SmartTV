@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation=
+                    "http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="com.fardaz.rm" module="ContactManager">
+        <license name="RemoteWeb License"/>
+    </info>
+
+    <configurations defaultconf="dist"
+                    defaultconfmapping="dist->default,master(*),default(*),source(*);javadoc->javadoc(*);source->source(*)">
+        <conf name="dist" description="production configuration"/>
+        <conf name="test" description="configuration used for testing" visibility="private"/>
+        <conf name="android" description="android configuration"/>
+        <conf name="jetty" description="libraries needed for compiling/running embedded jetty" visibility="private"/>
+    </configurations>
+
+    <publications>
+        <artifact name="core" type="jar" conf="dist" ext="jar"/>
+        <artifact name="engine" type="jar" conf="dist" ext="jar"/>
+    </publications>
+
+    <dependencies>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.6"/>
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.6"/>
+        <dependency org="log4j" name="log4j" rev="1.2.17"/>
+
+        <dependency org="com.google.guava" name="guava" rev="13.0"/>
+        <dependency org="asg.cliche" name="cliche" rev="4"/>
+
+        <dependency org="org.apache.wicket" name="wicket-util" rev="6.0.0">
+            <exclude module="servlet-api"/>
+        </dependency>
+        <dependency org="org.apache.wicket" name="wicket-core" rev="6.0.0">
+            <exclude module="servlet-api"/>
+        </dependency>
+        <dependency org="org.apache.wicket" name="wicket-extensions" rev="6.0.0">
+            <exclude module="servlet-api"/>
+        </dependency>
+
+        <dependency org="org.apache.wicket" name="wicket-bootstrap" rev="0.1">
+            <exclude module="servlet-api"/>
+        </dependency>
+        <dependency org="de.agilecoders.wicket" name="bootstrap" rev="0.5.1"/>
+
+        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1"/>
+
+
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="8.1.0.RC5"
+                    conf="jetty->default(*),javadoc(*),source(*)"/>
+        <dependency org="org.eclipse.jetty" name="jetty-security" rev="8.1.0.RC5"
+                    conf="jetty->default(*),javadoc(*),source(*)"/>
+        <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="8.1.0.RC5"
+                    conf="jetty->default(*),javadoc(*),source(*)"/>
+        <dependency org="org.eclipse.jetty" name="jetty-util" rev="8.1.0.RC5"
+                    conf="jetty->default(*),javadoc(*),source(*)"/>
+        <dependency org="org.eclipse.jetty" name="jetty-plus" rev="8.1.0.RC5"
+                    conf="jetty->default(*),javadoc(*),source(*)"/>
+        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="8.1.0.RC5"
+                    conf="jetty->default(*),javadoc(*),source(*)"/>
+
+        <dependency org="org.testng" name="testng" rev="6.5.2" conf="test->master(*),default(*),javadoc(*),source(*)"/>
+        <dependency org="org.mockito" name="mockito-all" rev="1.9.5-rc1"/>
+    </dependencies>
+</ivy-module>

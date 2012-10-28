@@ -1,0 +1,51 @@
+<ivysettings>
+    <settings defaultResolver="default"/>
+    <property name="ivy.local.default.root"             value="${ivy.default.ivy.user.dir}/local" override="false"/>
+    <property name="ivy.local.default.ivy.pattern"      value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+    <property name="ivy.local.default.artifact.pattern" value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+
+    <resolvers>
+        <ibiblio name="r0" m2compatible="true" root="http://uk.maven.org/maven2"/>
+        <ibiblio name="r0.1" m2compatible="true" root="http://mirrors.ibiblio.org/pub/mirrors/maven2/"/>
+        <ibiblio name="r0.2" m2compatible="true" root="http://mirror.squ.edu.om/"/>
+        <ibiblio name="r0.3" m2compatible="true" root="http://repo.maven.apache.org/maven2/"/>
+        <ibiblio name="r1" m2compatible="true" root="http://repo1.maven.org/maven2/"/>
+        <ibiblio name="r2" m2compatible="true" root="http://repo2.maven.org/maven2/"/>
+        <ibiblio name="r3" m2compatible="true" root="http://download.java.net/maven/2/"/>
+        <ibiblio name="r4" m2compatible="true" root="http://jqwicket.googlecode.com/svn/m2-repo/releases/"/>
+        <ibiblio name="r5" m2compatible="true" root="http://www.orientechnologies.com/listing/m2"/>
+        <ibiblio name="r6" m2compatible="true" root="http://maven.restlet.org/"/>
+        <ibiblio name="r7" m2compatible="true" root="http://maven.glassfish.org/content/groups/glassfish/"/>
+        <ibiblio name="r8" m2compatible="true" root="http://jasperreports.sourceforge.net/maven2/"/>
+        <ibiblio name="r9" m2compatible="true" root="http://www.mvnsearch.org/maven2/"/>
+        <ibiblio name="r9.1" m2compatible="true" root="http://www.jemos.eu/nexus/content/repositories/jboss-repository/"/>
+        <ibiblio name="r9.2" m2compatible="true" root="http://test.okdigital.com/artifactory/remote-repos/"/>
+        <ibiblio name="r9.3" m2compatible="true" root="http://gazelle.ihe.net/nexus/content/repositories/thirdparty/"/>
+        <ibiblio name="r9.4" m2compatible="true" root="http://mavenrepo.openmrs.org/nexus/content/repositories/central/"/>
+
+        <filesystem name="local">
+            <ivy pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
+            <artifact pattern="${ivy.local.default.root}/${ivy.local.default.artifact.pattern}" />
+        </filesystem>
+
+        <chain name="default" returnFirst="true">
+            <resolver ref="local"/>
+            <resolver ref="r0"/>
+            <resolver ref="r0.1"/>
+            <resolver ref="r0.2"/>
+            <resolver ref="r0.3"/>
+            <resolver ref="r1"/>
+            <resolver ref="r2"/>
+            <resolver ref="r3"/>
+            <resolver ref="r4"/>
+            <resolver ref="r5"/>
+            <resolver ref="r6"/>
+            <resolver ref="r8"/>
+            <resolver ref="r9"/>
+            <resolver ref="r9.1"/>
+            <resolver ref="r9.2"/>
+            <resolver ref="r9.3"/>
+            <resolver ref="r9.4"/>
+        </chain>
+    </resolvers>
+</ivysettings>

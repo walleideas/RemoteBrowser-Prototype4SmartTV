@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:extend>
+    <div class="row">
+        <div class="span3 bs-docs-sidebar">
+            <ul class="nav nav-list bs-docs-sidenav affix">
+                <li class="active"><a href="#"><i class="icon-chevron-right"></i><span>Dashboard</span></a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i><span>Tasks</span></a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i><span>Documents</span></a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i><span>Members</span></a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i><span>Links</span></a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i><span>Import</span></a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i><span>Export</span></a></li>
+            </ul>
+        </div>
+        <div class="span9">
+            <section id="contacts">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#">Timeline</a></li>
+                    <li><a href="#">Tasks</a></li>
+                    <li><a href="#">Documents</a></li>
+                    <li><a href="#">[+ Add new]</a></li>
+                </ul>
+                <div class="">
+
+                    <div id="timeline-embed"></div>
+                    <script type="text/javascript">
+                        var timeline_config = {
+                            width:              '100%',
+                            height:             '500',
+                            source:             '/demo/assets/sample-projects.json',
+                            embed_id:           'timeline-embed',               //OPTIONAL USE A DIFFERENT DIV ID FOR EMBED
+                            start_at_end:       false,                          //OPTIONAL START AT LATEST DATE
+                            start_at_slide:     '1',                            //OPTIONAL START AT SPECIFIC SLIDE
+                            start_zoom_adjust:  '3',                            //OPTIONAL TWEAK THE DEFAULT ZOOM LEVEL
+                            hash_bookmark:      true,                           //OPTIONAL LOCATION BAR HASHES
+                            font:               'Bevan-PotanoSans',             //OPTIONAL FONT
+                            debug:              true,                           //OPTIONAL DEBUG TO CONSOLE
+                            lang:               'en',                           //OPTIONAL LANGUAGE
+                            maptype:            'watercolor',                   //OPTIONAL MAP STYLE
+                            css:                '/css/timeline.css',     //OPTIONAL PATH TO CSS
+                            js:                 '/js/timeline-min.js'    //OPTIONAL PATH TO JS
+                        }
+                    </script>
+                    <script type="text/javascript" src="/js/storyjs-embed.js"></script>
+
+                </div>
+            </section>
+        </div>
+    </div>
+</wicket:extend>
+</body>
+</html>

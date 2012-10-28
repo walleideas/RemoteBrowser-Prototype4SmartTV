@@ -1,0 +1,137 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="RemoteWeb" default="run"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="antlib:org.apache.ivy.ant ">
+
+    <property file="build.properties"/>
+    <property name="ivy.install.version" value="2.3.0-rc1"/>
+    <condition property="ivy.home" value="${env.IVY_HOME}">
+        <isset property="env.IVY_HOME"/>
+    </condition>
+    <property name="ivy.jar.dir" value="${ivy.home}/jars"/>
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar"/>
+
+    <property name="ivy.jar.dir" value="${user.home}/.ivy2"/>
+
+    <target name="download-ivy" unless="offline" description="download ivy">
+
+        <mkdir dir="${ivy.jar.dir}"/>
+        <!-- download Ivy from web site so that it can be used even without any special installation -->
+        <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="init-ivy" depends="download-ivy" description="init ivy">
+
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+
+        <ivy:settings file="ivy-settings.xml"/>
+    </target>
+
+    <target name="resolve" depends="init-ivy" unless="already.resolved"
+            description="--> retrieve dependencies with ivy">
+        <ivy:resolve file="${ivy.file}"/>
+
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" type="jar,bundle"/>
+        <ivy:retrieve pattern="${lib.dir}/[type]/[artifact]-[revision].[ext]" type="source,javadoc"/>
+
+        <ivy:cachepath pathid="ivy.dist.compile.path" conf="dist" type="jar,bundle"/>
+        <ivy:cachepath pathid="jetty.compile.path" conf="jetty" type="jar,bundle"/>
+        <ivy:cachepath pathid="test.jars.path" conf="test" type="jar,bundle"/>
+        <path id="dist.compile.path">
+            <path refid="ivy.dist.compile.path"/>
+            <fileset dir="${build.dir}" includes="*.jar"/>
+        </path>
+
+        <property name="already.resolved" value="yes"/>
+    </target>
+
+    <target name="clean">
+         <delete dir="lib"/>
+         <delete dir="build"/>
+    </target>
+    <target name="compile">
+        <mkdir dir="${out-dir}"/>
+        <javac destdir="${out-dir}" classpathref="${cp-ref}"
+               encoding="utf8"
+               includejavaruntime="false"
+               includedestclasses="false"
+               includeantruntime="false" debug="true">
+            <src path="${src-dir}"/>
+        </javac>
+    </target>
+
+    <target name="compile-web" depends="resolve" description="--> compile web">
+        <antcall target="compile" inheritrefs="true">
+            <param name="out-dir" value="${web.classes}"/>
+            <param name="src-dir" value="${main.src}"/>
+            <param name="cp-ref" value="dist.compile.path"/>
+        </antcall>
+        <copy todir="${web.classes}">
+            <fileset dir="${main.src}" excludes="**/*.java"/>
+        </copy>
+    </target>
+
+    <target name="compile-jetty" depends="resolve" description="--> compile embedded jetty">
+        <antcall target="compile" inheritrefs="true">
+            <param name="out-dir" value="${jetty.classes}"/>
+            <param name="src-dir" value="${jetty.src}"/>
+            <param name="cp-ref" value="jetty.compile.path"/>
+        </antcall>
+        <copy todir="${jetty.classes}">
+            <fileset dir="src/main/resources"/>
+        </copy>
+    </target>
+
+    <target name="jar">
+        <echo message="Making jar file: ${build.dir}/${jar-file}-${project.version}.jar"/>
+        <jar destfile="${build.dir}/${jar-file}-${project.version}.jar">
+            <fileset dir="${classes-dir}"/>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Build-Version" value="0.1"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-web" depends="compile-web" description="--> create web jar">
+        <antcall target="jar" inheritrefs="true">
+            <param name="jar-file" value="${web.module.name}"/>
+            <param name="classes-dir" value="${web.classes}"/>
+        </antcall>
+    </target>
+
+    <target name="build-war" depends="resolve, jar-web" description="--> build war structure ${ant.project.name}">
+
+        <copy todir="${war.dir}/WEB-INF">
+            <fileset dir="${web.src}/WEB-INF" excludes="**/*.java"/>
+        </copy>
+        <copy todir="${war.dir}/WEB-INF/lib" flatten="true">
+            <path refid="dist.compile.path"/>
+            <fileset dir="${build.dir}" includes="${web.module.name}-${project.version}.jar"/>
+        </copy>
+        <copy todir="${war.dir}">
+            <fileset dir="${web.src}"/>
+        </copy>
+
+    </target>
+
+    <target name="run" depends="resolve, compile-jetty, build-war" description="--> run embedded jetty">
+        <echo message="-Dwar.dir=${war.dir}"/>
+
+        <java classname="${jetty.starter.class}" fork="true">
+            <classpath>
+                <path refid="jetty.compile.path"/>
+                <path refid="dist.compile.path"/>
+                <pathelement location="${jetty.classes}"/>
+            </classpath>
+            <jvmarg line="-Dwar.dir=${war.dir}"/>
+            <jvmarg line="${debug.args}"/>
+        </java>
+
+    </target>
+
+
+</project>
